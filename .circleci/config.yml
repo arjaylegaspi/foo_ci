@@ -2,13 +2,24 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/ruby:2.4.2-jessie-node
+      - image: circleci/python:3.6.2-stretch-browsers
+      environment:
+          TEST_DATABASE_URL: postgresql://root@localhost/circleci_test
+      -image: circleci/postgres:9.6.5-alphine-ram
     steps:
       - checkout
-      - restore_cache:
-           key: npm_cache-{{ .Branch }}-{{ checksum "package.json" }}
-      - run: npm install
-      - save_cache:
-          key: npm_cache-{{ .Branch }}-{{ checksum "package.json" }}
-          paths:
-            - node_modules
+      - run: sudo apt-get update
+      - run: sudo apt-get install postgresql-client-9.6
+      - run: whoami
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "CREATE TABLE test (name char(25));"
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "INSERT INTO test VALUES ('John'), ('Joanna'), ('Matt');"
+      - run: |
+          psql \
+          -d $TEST_DATABASE_URL \
+          -c "SELECT * FROM test"
