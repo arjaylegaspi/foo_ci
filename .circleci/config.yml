@@ -1,8 +1,20 @@
 version: 2.0
 jobs:
-  build:
+  one:
     docker:
       - image: circleci/ruby:2.4.2-jessie-node
     steps:
       - checkout
       - run: curl -s -n -X POST "https://tapi.carbonetes.com/auth/signin" -d '{"username":"admin@carbonetes.com", "password":"!Carbonetes99"}' -H 'Content-Type:application/json'
+  two:
+    docker:
+      - image: circleci/ruby:2.4.2-jessie-node
+    steps:
+      - checkout
+      - run: echo 'Hello World'
+workflows:
+  version: 2
+  one_and_two:
+    jobs:
+      - one
+      - two
