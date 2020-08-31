@@ -1,48 +1,22 @@
-version: 2
-
+version: 2.1
 jobs:
-  build1:
+  build:
+    # pre-built images: https://circleci.com/docs/2.0/circleci-images/
     docker:
-      - image: circleci/ruby:2.4-node
-      - image: circleci/postgres:9.4.12-alpine
+      - image: circleci/node:10-browsers
     steps:
       - checkout
-      - save_cache: # Caches dependencies with a cache key
-          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
-          paths:
-            - ~/circleci-demo-workflows
-
-  build2:
-    docker:
-      - image: circleci/ruby:2.4-node
-      - image: circleci/postgres:9.4.12-alpine
-    steps:
-      - restore_cache: # Restores the cached dependency.
-          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
       - run:
-          name: Running tests
-          command: make test
-  build3:
-    docker:
-      - image: circleci/ruby:2.4-node
-      - image: circleci/postgres:9.4.12-alpine
-    steps:
-      - restore_cache: # Restores the cached dependency.
-          key: v1-repo-{{ .Environment.CIRCLE_SHA1 }}
+          name: The First Step
+          command: |
+            echo 'Hello World!'
+            echo 'This is the delivery pipeline'
       - run:
-          name: Precompile assets
-          command: bundle exec rake assets:precompile
-#...
-workflows:
-  version: 2
-  build_and_test: # name of your workflow
-    jobs:
-      - build1
-      - build2:
-          requires:
-           - build1 # wait for build1 job to complete successfully before starting
-           # see circleci.com/docs/2.0/workflows/ for more examples.
-      - build3:
-          requires:
-           - build1 # wait for build1 job to complete successfully before starting
-           # run build2 and build3 concurrently to save time.
+          name: Code Has Arrived
+          command: |
+            ls -al
+            echo '^^^That should look familiar^^^'
+      - run:
+          name: Running in a Unique Container
+          command: |
+            node -v
