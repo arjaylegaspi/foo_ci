@@ -1,8 +1,0 @@
-version: 2.0
-jobs:
-  build:
-    docker:
-      - image: circleci/ruby:2.4.2-jessie-node
-    steps:
-      - checkout
-      - run: curl -s -n -X POST "https://tapi.carbonetes.com/auth/signin" -d '{"username":"admin@carbonetes.com", "password":"!Carbonetes99"}' -H 'Content-Type:application/json'
